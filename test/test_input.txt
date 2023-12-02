@@ -1,1 +1,1 @@
-hola soy pablo
+P(A)((P(X)((A U B)) - B))
