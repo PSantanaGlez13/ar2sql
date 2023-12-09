@@ -1,4 +1,4 @@
-:- include('utiles.pl').
+:- use_module(utiles).
 :- use_module(library(dcg/basics)).
 
 % tabla/3.
@@ -26,14 +26,15 @@ seleccion(selecc(X,Y)) -->  "S(",expresion_logica(X),")(",tabla(Y),")".
 
 % producto_cartesiano/3
 % Representa al operador producto cartesiano.
+%producto_cartesiano(pc(X,Y)) --> tabla(X),whites,"x",whites,tabla(Y).
 producto_cartesiano(pc(X,Y)) --> "(",tabla(X),whites,"x",whites,tabla(Y),")".
-
 
 % union/3
 % Representa al operador unión.
+%union(u(X, Y)) --> tabla(X),whites,"U",whites,tabla(Y).
 union(u(X, Y)) --> "(",tabla(X),whites,"U",whites,tabla(Y),")".
-
 
 % diferencia/3
 % Representa al operador diferencia.
+%diferencia(dif(X,Y)) --> tabla(X),whites,"-",whites,tabla(Y).
 diferencia(dif(X,Y)) --> "(",tabla(X),whites,"-",whites,tabla(Y),")".

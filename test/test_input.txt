@@ -1,1 +1,1 @@
-P(A)((P(X)((A U B)) - B))
+aguacate
