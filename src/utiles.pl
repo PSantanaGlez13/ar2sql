@@ -1,4 +1,4 @@
-:- module(utiles,[imprimir_resultado/1,nueva_linea/2,punto_coma_final/2,literal/3,expresion_logica/3]).
+:- module(utiles,[imprimir_resultado/1,nueva_linea/2,punto_coma_final/2,literal/3,expresion_logica/3,expresion_logica_a_string/3]).
 :- use_module(library(ctypes)).
 :- use_module(library(dcg/basics)).
 
@@ -23,7 +23,7 @@ literal(lit(X)) --> string(Y),{alfabetico(Y),string_codes(X,Y)}.
 expresion_logica(X) --> mayor(X) | mayor_igual(X) | menor(X) | menor_igual(X) | igual(X) |
                         conjuncion(X) | disyuncion(X) | no_igual(X).
 
-termino_comparacion(int(X)) --> integer(X).
+termino_comparacion(lit(X)) --> integer(Y),{number_string(Y,X)}.
 termino_comparacion(X) --> literal(X).
 
 mayor(mayor(X,Y)) --> termino_comparacion(X), whites,">",whites,termino_comparacion(Y).
@@ -31,6 +31,25 @@ mayor_igual(mayor_igual(X,Y)) --> termino_comparacion(X), whites,">=",whites,ter
 menor(menor(X,Y)) --> termino_comparacion(X), whites,"<",whites,termino_comparacion(Y).
 menor_igual(menor_igual(X,Y)) --> termino_comparacion(X), whites,"<=",whites,termino_comparacion(Y).
 igual(igual(X,Y)) --> termino_comparacion(X), whites,"=",whites,termino_comparacion(Y).
-no_igual(igual(X,Y)) --> termino_comparacion(X), whites,"!=",whites,termino_comparacion(Y).
+no_igual(no_igual(X,Y)) --> termino_comparacion(X), whites,"!=",whites,termino_comparacion(Y).
 conjuncion(conjuncion(X,Y)) --> "(",expresion_logica(X), whites,"Y",whites,expresion_logica(Y),")".
 disyuncion(disyuncion(X,Y)) --> "(",expresion_logica(X), whites,"O",whites,expresion_logica(Y),")".
+
+
+poner_and([" AND "|H], H).
+poner_or([" OR "|H], H).
+
+combinar_strings([], [], _).
+combinar_strings([Head|Tail], StringActual, Resultado) :- string_concat(StringActual, Head, StringNueva),
+                                                          combinar_strings(Tail, StringNueva, Resultado).
+
+expresion_logica_a_string(mayor(lit(A),lit(B)), [X|Y], Y) :- format(string(X),"~w > ~w", [A,B]).
+expresion_logica_a_string(mayor_igual(lit(A),lit(B)), [X|Y], Y) :- format(string(X),"~w >= ~w", [A,B]).
+expresion_logica_a_string(menor(lit(A),lit(B)), [X|Y], Y) :- format(string(X),"~w < ~w", [A,B]).
+expresion_logica_a_string(menor_igual(lit(A),lit(B)), [X|Y], Y) :- format(string(X),"~w <= ~w", [A,B]).
+expresion_logica_a_string(igual(lit(A),lit(B)), [X|Y], Y) :- format(string(X),"~w = ~w", [A,B]).
+expresion_logica_a_string(no_igual(lit(A),lit(B)), [X|Y], Y) :- format(string(X),"~w != ~w", [A,B]).
+expresion_logica_a_string(conjuncion(A,B), [Resultado|H], H) :- expresion_logica_a_string(A,ListaStrings, H1), poner_and(H1,H2),
+                                                             expresion_logica_a_string(B, H2, H), combinar_strings(ListaStrings, "", Resultado).
+expresion_logica_a_string(disyuncion(A,B), [Resultado|H], H) :- expresion_logica_a_string(A,ListaStrings, H1), poner_or(H1,H2),
+                                                             expresion_logica_a_string(B, H2, H), combinar_strings(ListaStrings, "", Resultado).
