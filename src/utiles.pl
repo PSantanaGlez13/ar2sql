@@ -1,4 +1,5 @@
-:- module(utiles,[imprimir_resultado/1,nueva_linea/2,punto_coma_final/2,literal/3,expresion_logica/3,expresion_logica_a_string/3]).
+:- module(utiles,[imprimir_resultado/1,nueva_linea/2,punto_coma_final/2,literal/3,expresion_logica/3,expresion_logica_a_string/3,combinar_strings/3,
+                  poner_minus/2, poner_union/2]).
 :- use_module(library(ctypes)).
 :- use_module(library(dcg/basics)).
 
@@ -38,6 +39,10 @@ disyuncion(disyuncion(X,Y)) --> "(",expresion_logica(X), whites,"O",whites,expre
 
 poner_and([" AND "|H], H).
 poner_or([" OR "|H], H).
+poner_union(["\nUNION\n"|H], H).
+poner_minus(["\nMINUS\n"|H], H).
+abrir_parentesis(["("|H], H).
+cerrar_parentesis([")"|H], H).
 
 combinar_strings([], Resultado, Resultado).
 combinar_strings([Head|Tail], StringActual, Resultado) :- string_concat(StringActual, Head, StringNueva),
