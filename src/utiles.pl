@@ -39,7 +39,7 @@ disyuncion(disyuncion(X,Y)) --> "(",expresion_logica(X), whites,"O",whites,expre
 poner_and([" AND "|H], H).
 poner_or([" OR "|H], H).
 
-combinar_strings([], [], _).
+combinar_strings([], Resultado, Resultado).
 combinar_strings([Head|Tail], StringActual, Resultado) :- string_concat(StringActual, Head, StringNueva),
                                                           combinar_strings(Tail, StringNueva, Resultado).
 
@@ -50,6 +50,6 @@ expresion_logica_a_string(menor_igual(lit(A),lit(B)), [X|Y], Y) :- format(string
 expresion_logica_a_string(igual(lit(A),lit(B)), [X|Y], Y) :- format(string(X),"~w = ~w", [A,B]).
 expresion_logica_a_string(no_igual(lit(A),lit(B)), [X|Y], Y) :- format(string(X),"~w != ~w", [A,B]).
 expresion_logica_a_string(conjuncion(A,B), [Resultado|H], H) :- expresion_logica_a_string(A,ListaStrings, H1), poner_and(H1,H2),
-                                                             expresion_logica_a_string(B, H2, H), combinar_strings(ListaStrings, "", Resultado).
+                                                             expresion_logica_a_string(B, H2, []), combinar_strings(ListaStrings, "", Resultado).
 expresion_logica_a_string(disyuncion(A,B), [Resultado|H], H) :- expresion_logica_a_string(A,ListaStrings, H1), poner_or(H1,H2),
-                                                             expresion_logica_a_string(B, H2, H), combinar_strings(ListaStrings, "", Resultado).
+                                                             expresion_logica_a_string(B, H2, []), combinar_strings(ListaStrings, "", Resultado).
